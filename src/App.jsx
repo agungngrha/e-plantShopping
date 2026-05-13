@@ -1,28 +1,31 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import ProductList from "./pages/ProductList";
-import CartItem from "./pages/CartItem";
-import AboutUs from "./pages/AboutUs";
-import Navbar from "./components/Navbar";
+import React from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import ProductList from './pages/ProductList';
+import CartItem from './pages/CartItem';
+import './App.css';
 
 function App() {
+  const navigate = useNavigate();
+
   return (
-    <BrowserRouter>
-      <div className="container">
-        <Navbar />
-
-        <h1>Paradise Nursery</h1>
-
-        <Link to="/plants">
-          <button>Get Started</button>
-        </Link>
-
-        <Routes>
-          <Route path="/" element={<AboutUs />} />
-          <Route path="/plants" element={<ProductList />} />
-          <Route path="/cart" element={<CartItem />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <div className="app-container">
+      <Routes>
+        <Route path="/" element={
+          <div className="landing-page background-image">
+            <div className="content">
+              <h1>Paradise Nursery</h1>
+              <div className="divider"></div>
+              <p>Bring Nature into Your Living Space</p>
+              <button className="get-started-button" onClick={() => navigate('/plants')}>
+                Get Started
+              </button>
+            </div>
+          </div>
+        } />
+        <Route path="/plants" element={<ProductList />} />
+        <Route path="/cart" element={<CartItem onContinueShopping={() => navigate('/plants')} />} />
+      </Routes>
+    </div>
   );
 }
 

@@ -1,37 +1,88 @@
-import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/CartSlice";
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../redux/CartSlice';
+import Navbar from '../components/Navbar';
+import './ProductList.css';
+ // Perhatikan ekstensi .webP sesuai gambar
 
-const plants = [
-  { id: 1, name: "Aloe Vera", price: 10, category: "Indoor", image: "https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?auto=format&fit=crop&w=800&q=60" },
-  { id: 2, name: "Snake Plant", price: 12, category: "Indoor", image: "https://images.unsplash.com/photo-1524594154905-9a6f2c5d3f5f?auto=format&fit=crop&w=800&q=60" },
-  { id: 3, name: "Peace Lily", price: 15, category: "Flower", image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=60" },
-  { id: 4, name: "Fern", price: 8, category: "Outdoor", image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=61" },
-  { id: 5, name: "Cactus", price: 7, category: "Succulent", image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=62" },
-  { id: 6, name: "Bonsai", price: 20, category: "Tree", image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=63" }
+// Pastikan strukturnya bersih seperti ini
+const plantsArray = [
+    {
+        category: "Air Purifying",
+        plants: [
+            { 
+                id: 1, 
+                name: "Snake Plant", 
+                price: 15, 
+                image: "/snake-plant.jpg", // Jalur ini langsung mengambil dari folder public
+                description: "Pembersih udara alami." 
+            },
+            { 
+                id: 2, 
+                name: "Spider Plant", 
+                price: 12, 
+                image: "/spider-plant.webp", // Pastikan ekstensi .webp sesuai
+                description: "Sangat mudah dirawat." 
+            }
+        ]
+    },
+    {
+        category: "Aromatic",
+        plants: [
+            { 
+                id: 3, 
+                name: "Lavender", 
+                price: 18, 
+                image: "/lavender.jpg", 
+                description: "Aroma yang menenangkan." 
+            },
+            { 
+                id: 4, 
+                name: "Rosemary", 
+                price: 10, 
+                image: "/rosemary.jpg", 
+                description: "Tanaman herbal wangi." 
+            }
+        ]
+    }
 ];
-
 function ProductList() {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const [addedItems, setAddedItems] = useState({});
 
-  return (
-    <div>
-      <h2>Plant List</h2>
+    const handleAddToCart = (plant) => {
+        dispatch(addItem({ ...plant, cost: `$${plant.price}` }));
+        setAddedItems(prev => ({ ...prev, [plant.id]: true }));
+    };
 
-      <div className="product-grid">
-        {plants.map((plant) => (
-          <div className="product-card" key={plant.id}>
-            <img src={plant.image} alt={plant.name} />
-            <h3>{plant.name}</h3>
-            <p className="price">${plant.price}</p>
-            <p className="muted">{plant.category}</p>
-            <div className="controls">
-              <button onClick={() => dispatch(addToCart(plant))}>Add to Cart</button>
+    return (
+        <div className="product-page">
+            <Navbar />
+            <div className="product-listing-container">
+                {plantsArray.map((category) => (
+                    <div key={category.category} className="category-section">
+                        <h2 className="category-title">{category.category}</h2>
+                        <div className="product-grid">
+                            {category.plants.map((plant) => (
+                                <div className="product-card" key={plant.id}>
+                                    <img src={plant.image} alt={plant.name} className="product-image" />
+                                    <h3 className="product-name">{plant.name}</h3>
+                                    <p className="product-price">${plant.price}</p>
+                                    <button 
+                                        className="add-to-cart-btn"
+                                        disabled={addedItems[plant.id]} 
+                                        onClick={() => handleAddToCart(plant)}
+                                    >
+                                        {addedItems[plant.id] ? "Added" : "Add to Cart"}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
 
 export default ProductList;

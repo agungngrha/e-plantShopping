@@ -1,8 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
-import cartReducer from "./CartSlice";
+import { configureStore } from '@reduxjs/toolkit';
+import cartReducer from './CartSlice';
 
-export const store = configureStore({
-  reducer: {
-    cart: cartReducer
-  }
+const store = configureStore({
+    reducer: {
+        cart: cartReducer,
+    },
 });
+
+export default store; // Pastikan baris ini ada agar tidak error lagi
