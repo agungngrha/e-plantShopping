@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from '../redux/CartSlice';
-import Navbar from '../components/Navbar';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
@@ -9,52 +8,53 @@ const CartItem = ({ onContinueShopping }) => {
   const dispatch = useDispatch();
 
   const calculateTotalAmount = () => {
-    return cart.reduce((total, item) => {
-      const numericPrice = parseFloat(item.cost.replace('$', ''));
-      return total + (numericPrice * item.quantity);
-    }, 0);
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   const handleIncrement = (item) => {
-    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
+    dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
   };
 
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
-      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+      dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
     } else {
-      dispatch(removeItem(item.name));
+      dispatch(removeItem(item.id));
     }
+  };
+
+  const handleRemove = (item) => {
+    dispatch(removeItem(item.id));
+  };
+
+  const calculateTotalCost = (item) => {
+    return item.price * item.quantity;
   };
 
   return (
     <div className="cart-container">
-      <Navbar />
-      <h2 style={{ textAlign: 'center', marginTop: '20px' }}>
-        Total Cart Amount: ${calculateTotalAmount()}
-      </h2>
-      <div className="cart-items-list">
-        {cart.map((item) => (
-          <div className="cart-item" key={item.name}>
+      <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
+      <div>
+        {cart.map(item => (
+          <div className="cart-item" key={item.id}>
             <img className="cart-item-image" src={item.image} alt={item.name} />
             <div className="cart-item-details">
               <div className="cart-item-name">{item.name}</div>
-              <div className="cart-item-cost">{item.cost}</div>
+              <div className="cart-item-cost">${item.price}</div>
               <div className="cart-item-quantity">
-                <button onClick={() => handleDecrement(item)}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => handleIncrement(item)}>+</button>
+                <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(item)}>-</button>
+                <span className="cart-item-quantity-value">{item.quantity}</span>
+                <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(item)}>+</button>
               </div>
-              <div className="cart-item-total">Subtotal: ${parseFloat(item.cost.replace('$', '')) * item.quantity}</div>
-              <button className="cart-item-delete" onClick={() => dispatch(removeItem(item.name))}>Delete</button>
+              <div className="cart-item-total">Subtotal: ${calculateTotalCost(item)}</div>
+              <button className="cart-item-delete" onClick={() => handleRemove(item)}>Delete</button>
             </div>
           </div>
         ))}
       </div>
-      <div className="cart-actions" style={{ textAlign: 'center', marginTop: '20px' }}>
+      <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <button className="get-started-button" onClick={onContinueShopping}>Continue Shopping</button>
-        <br />
-        <button className="get-started-button" style={{ marginTop: '10px' }} onClick={() => alert('Coming Soon')}>Checkout</button>
+        <button className="get-started-button" onClick={() => alert('Coming Soon')}>Checkout</button>
       </div>
     </div>
   );

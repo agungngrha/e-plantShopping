@@ -1,66 +1,42 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { addItem } from '../redux/CartSlice';
-import Navbar from '../components/Navbar';
 import './ProductList.css';
- // Perhatikan ekstensi .webP sesuai gambar
+import Navbar from '../components/Navbar';
 
-// Pastikan strukturnya bersih seperti ini
-const plantsArray = [
-    {
-        category: "Air Purifying",
-        plants: [
-            { 
-                id: 1, 
-                name: "Snake Plant", 
-                price: 15, 
-                image: "/snake-plant.jpg", // Jalur ini langsung mengambil dari folder public
-                description: "Pembersih udara alami." 
-            },
-            { 
-                id: 2, 
-                name: "Spider Plant", 
-                price: 12, 
-                image: "/spider-plant.webp", // Pastikan ekstensi .webp sesuai
-                description: "Sangat mudah dirawat." 
-            }
-        ]
-    },
-    {
-        category: "Aromatic",
-        plants: [
-            { 
-                id: 3, 
-                name: "Lavender", 
-                price: 18, 
-                image: "/lavender.jpg", 
-                description: "Aroma yang menenangkan." 
-            },
-            { 
-                id: 4, 
-                name: "Rosemary", 
-                price: 10, 
-                image: "/rosemary.jpg", 
-                description: "Tanaman herbal wangi." 
-            }
-        ]
-    }
-];
 function ProductList() {
     const dispatch = useDispatch();
-    const [addedItems, setAddedItems] = useState({});
+    const cartItems = useSelector(state => state.cart.items);
+    
+    const plantsArray = [
+        {
+            category: "Air Purifying",
+            plants: [
+                { id: 1, name: "Snake Plant", price: 15, image: "/snake-plant.jpg", description: "Pembersih udara alami." },
+                { id: 2, name: "Spider Plant", price: 12, image: "/spider-plant.webp", description: "Sangat mudah dirawat." },
+                { id: 3, name: "Peace Lily", price: 20, image: "https://images.pexels.com/photos/4505171/pexels-photo-4505171.jpeg", description: "Bunga putih yang elegan." }
+            ]
+        },
+        {
+            category: "Aromatic",
+            plants: [
+                { id: 4, name: "Lavender", price: 18, image: "/lavender.jpg", description: "Aroma yang menenangkan." },
+                { id: 5, name: "Rosemary", price: 10, image: "/rosemary.jpg", description: "Tanaman herbal wangi." },
+                { id: 6, name: "Mint", price: 8, image: "https://images.pexels.com/photos/1084545/pexels-photo-1084545.jpeg", description: "Segar dan serbaguna." }
+            ]
+        }
+    ];
 
     const handleAddToCart = (plant) => {
-        dispatch(addItem({ ...plant, cost: `$${plant.price}` }));
-        setAddedItems(prev => ({ ...prev, [plant.id]: true }));
+        dispatch(addItem(plant));
     };
 
     return (
-        <div className="product-page">
+        <div>
             <Navbar />
             <div className="product-listing-container">
-                {plantsArray.map((category) => (
-                    <div key={category.category} className="category-section">
+                {plantsArray.map((category, index) => (
+                    <div key={index}>
                         <h2 className="category-title">{category.category}</h2>
                         <div className="product-grid">
                             {category.plants.map((plant) => (
@@ -70,10 +46,10 @@ function ProductList() {
                                     <p className="product-price">${plant.price}</p>
                                     <button 
                                         className="add-to-cart-btn"
-                                        disabled={addedItems[plant.id]} 
+                                        disabled={cartItems.some(item => item.id === plant.id)}
                                         onClick={() => handleAddToCart(plant)}
                                     >
-                                        {addedItems[plant.id] ? "Added" : "Add to Cart"}
+                                        {cartItems.some(item => item.id === plant.id) ? "Added" : "Add to Cart"}
                                     </button>
                                 </div>
                             ))}
