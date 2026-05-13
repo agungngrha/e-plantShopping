@@ -10,10 +10,11 @@ function App() {
   return (
     <div className="app-container">
       <Routes>
+        {/* Halaman Landing */}
         <Route path="/" element={
           <div className="landing-page background-image">
             <div className="content">
-              <h1>Paradise Nursery</h1>
+              <h1>e-plantShopping</h1>
               <div className="divider"></div>
               <p>Bring Nature into Your Living Space</p>
               <button className="get-started-button" onClick={() => navigate('/plants')}>
@@ -22,8 +23,14 @@ function App() {
             </div>
           </div>
         } />
+
+        {/* Halaman Daftar Produk */}
         <Route path="/plants" element={<ProductList />} />
-        <Route path="/cart" element={<CartItem onContinueShopping={() => navigate('/plants')} />} />
+
+        {/* Halaman Keranjang Belanja */}
+        <Route path="/cart" element={
+          <CartItem onContinueShopping={() => navigate('/plants')} />
+        } />
       </Routes>
     </div>
   );

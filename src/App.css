@@ -4,14 +4,14 @@
 }
 
 .background-image {
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1470058869958-2a77a67c023d?w=1200');
+  background-image: url('/background.jpg'); /* Pastikan file ada di folder public */
   background-size: cover;
+  background-position: center;
   height: 100vh;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
-  text-align: center;
 }
 
 .get-started-button {
